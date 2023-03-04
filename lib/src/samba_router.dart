@@ -27,6 +27,7 @@ class SambaRouter<T> {
         case NodeType.static:
           currentNode = currentNode.staticChildNodes[pathSection] ??= Node<T>(
             pathSection: pathSection,
+            parentNode: currentNode,
           );
           break;
         case NodeType.parametric:
@@ -40,6 +41,7 @@ class SambaRouter<T> {
                 // node in not inserted already. So insert new node
                 final nodeToInsert = Node<T>(
                   pathSection: pathSection,
+                  parentNode: currentNode,
                 );
                 currentNode.regExpParametricChildNodes.add(nodeToInsert);
                 nodeInsertedAlready = nodeToInsert;
@@ -60,6 +62,7 @@ class SambaRouter<T> {
               }
               currentNode = currentNode.nonRegExpParametricChild ??= Node<T>(
                 pathSection: pathSection,
+                parentNode: currentNode,
               );
               break;
           }
@@ -67,6 +70,7 @@ class SambaRouter<T> {
         case NodeType.wildcard:
           currentNode = currentNode.wildcardNode ??= Node<T>(
             pathSection: pathSection,
+            parentNode: currentNode,
           );
 
           if (!pathSections.isLastIteration(i)) {
