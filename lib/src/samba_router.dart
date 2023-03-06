@@ -198,6 +198,89 @@ class SambaRouter<T> {
     _trees.clear();
   }
 
+  void combineWith(SambaRouter<T> other, {String? prefixPath}) {
+    for (final entry in other._trees.entries) {
+      final httpMethod = entry.key;
+      Node<T> node = entry.value;
+      _putNode(
+        httpMethod,
+        node,
+        prefixPath: prefixPath,
+      );
+    }
+  }
+
+  void _putNode(
+    HttpMethod httpMethod,
+    Node<T> node, {
+    String? prefixPath,
+  }) {
+    void put(HttpMethod httpMethod, Node<T> node) {
+      Node<T> tempNode = node;
+
+      List<String> pathSections = [];
+      while (true) {
+        // inserts tha pathSection at 0 postion,
+        // so that at last we will get correct pathSections
+        // by joining with "/".
+        pathSections.insert(0, tempNode.pathSection);
+        if (tempNode.parentNode == null) {
+          break;
+        }
+        tempNode = tempNode.parentNode!;
+      }
+      StringBuffer stringBuffer = StringBuffer();
+      // if prefixPath is not null, then add it
+      if (prefixPath != null) {
+        stringBuffer.write(prefixPath);
+        // if the last path is not "/" add it,
+        // as below we willing be writing the pathSections
+        if (prefixPath[prefixPath.length - 1] != '/') {
+          stringBuffer.write('/');
+        }
+      } else {
+        // as prefixPath is null simply add "/"
+        stringBuffer.write('/');
+      }
+      // finally add the pathSections by "/"
+      stringBuffer.writeAll(pathSections.skip(1), '/');
+      this.put(
+        method: httpMethod,
+        path: stringBuffer.toString(),
+        value: node.value as T,
+      );
+    }
+
+    // nonParametricNode is not null, so insert it recusively
+    if (node.nonRegExpParametricChild != null) {
+      _putNode(
+        httpMethod,
+        node.nonRegExpParametricChild!,
+        prefixPath: prefixPath,
+      );
+    }
+
+    // insert each regExpParametricChildNode recusively
+    for (final childNode in node.regExpParametricChildNodes) {
+      _putNode(httpMethod, childNode, prefixPath: prefixPath);
+    }
+
+    // insert each staticChildNode recusively
+    for (final entry in node.staticChildNodes.entries) {
+      _putNode(httpMethod, entry.value, prefixPath: prefixPath);
+    }
+
+    // currentNode value is  not null, so insert it
+    if (node.value != null) {
+      put(httpMethod, node);
+    }
+
+    // wildcardNode value is not null, so insert it
+    if (node.wildcardNode?.value != null) {
+      put(httpMethod, node.wildcardNode!);
+    }
+  }
+
   @override
   String toString() {
     StringBuffer stringBuffer = StringBuffer();

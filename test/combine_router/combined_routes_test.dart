@@ -5,9 +5,10 @@ import 'package:test/test.dart';
 void main() {
   group('Combined Routes test', () {
     final sambaRouter = SambaRouter<String>();
+    final otherSambaRouter = SambaRouter<String>();
+    final oneMoreSambaRouter = SambaRouter<String>();
 
     final httpMethods = HttpMethod.values;
-
     for (final httpMethod in httpMethods) {
       final httpMethodName = httpMethod.name;
       sambaRouter
@@ -30,7 +31,9 @@ void main() {
           method: httpMethod,
           path: '/countries/{country}/',
           value: '$httpMethodName dynamic country',
-        )
+        );
+
+      otherSambaRouter
         ..put(
           method: httpMethod,
           path: '/countries/{country}/*',
@@ -40,13 +43,22 @@ void main() {
           method: httpMethod,
           path: '/countries/{country:\\d+\$}',
           value: '$httpMethodName dynamic number country',
-        )
-        ..put(
-          method: httpMethod,
-          path: '/countries/{country:\\d+\$}/states',
-          value: '$httpMethodName dynamic number country & state',
         );
+
+      oneMoreSambaRouter.put(
+        method: httpMethod,
+        path: '/states',
+        value: '$httpMethodName dynamic number country & state',
+      );
     }
+
+    otherSambaRouter.combineWith(
+      oneMoreSambaRouter,
+      prefixPath: '/countries/{country:\\d+\$}',
+    );
+    sambaRouter.combineWith(
+      otherSambaRouter,
+    );
 
     for (final httpMethod in httpMethods) {
       final httpMethodName = httpMethod.name;
