@@ -64,7 +64,7 @@ extension StringExtension on String {
   }
 
   /// Decode the path into pathSections as well as queryString.
-  DecodedPath get decodePath {
+  DecodedPath decodePath() {
     final pathSections = <String>[];
     int startIndex = 0;
     int queryStringIndex = -1;

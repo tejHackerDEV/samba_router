@@ -12,6 +12,11 @@ void main() {
       sambaRouter
         ..put(
           method: httpMethod,
+          path: '/',
+          value: '$httpMethodName root',
+        )
+        ..put(
+          method: httpMethod,
           path: '/countries',
           value: '$httpMethodName countries',
         )
@@ -51,6 +56,17 @@ void main() {
       final httpMethodName = httpMethod.name;
       test('Valid $httpMethodName test', () {
         Result<String>? result = sambaRouter.lookup(
+          method: httpMethod,
+          path: '/',
+        );
+        expect(
+          result?.value,
+          '$httpMethodName root',
+        );
+        expect(result?.pathParameters.isEmpty, isTrue);
+        expect(result?.queryParameters, isEmpty);
+
+        result = sambaRouter.lookup(
           method: httpMethod,
           path: '/countries',
         );
@@ -121,6 +137,15 @@ void main() {
     for (final httpMethod in httpMethods) {
       final httpMethodName = httpMethod.name;
       test('Invalid $httpMethodName test', () {
+        expect(
+          sambaRouter
+              .lookup(
+                method: httpMethod,
+                path: '/random',
+              )
+              ?.value,
+          isNull,
+        );
         expect(
           sambaRouter
               .lookup(
@@ -218,6 +243,15 @@ void main() {
       final httpMethodName = httpMethod.name;
       test('Clear $httpMethodName test', () {
         sambaRouter.clear();
+        expect(
+          sambaRouter
+              .lookup(
+                method: httpMethod,
+                path: '/',
+              )
+              ?.value,
+          isNull,
+        );
         expect(
           sambaRouter
               .lookup(

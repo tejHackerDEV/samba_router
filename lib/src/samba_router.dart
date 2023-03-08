@@ -20,7 +20,7 @@ class SambaRouter<T> {
     _trees[method] ??= Node<T>(pathSection: '/');
     Node<T> currentNode = _trees[method]!;
 
-    final pathSections = path.decodePath.sections;
+    final pathSections = path.decodePath().sections;
     for (int i = 0; i < pathSections.length; ++i) {
       final pathSection = pathSections[i];
       switch (pathSection.nodeType) {
@@ -99,12 +99,15 @@ class SambaRouter<T> {
     }
 
     final Map<String, String> pathParameters = {};
-    final decodedPath = path.decodePath;
-    currentNode = _lookup(
-      pathSections: decodedPath.sections,
-      currentNode: currentNode,
-      pathParameters: pathParameters,
-    );
+    final decodedPath = path.decodePath();
+    // only try looking-up for a route, if the pathSections are not empty.
+    if (decodedPath.sections.isNotEmpty) {
+      currentNode = _lookup(
+        pathSections: decodedPath.sections,
+        currentNode: currentNode,
+        pathParameters: pathParameters,
+      );
+    }
 
     final value = currentNode?.value;
     if (value == null) {
@@ -123,11 +126,6 @@ class SambaRouter<T> {
     required Node<T>? currentNode,
     required Map<String, String> pathParameters,
   }) {
-    if (pathSections.isEmpty) {
-      // if empty pathSections passed throw StateError
-      throw StateError("No pathSections");
-    }
-
     final pathSection = pathSections.first;
     Node<T>? tempNode = currentNode?.staticChildNodes[pathSection];
     if (tempNode != null) {

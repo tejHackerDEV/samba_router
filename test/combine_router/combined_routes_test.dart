@@ -14,6 +14,11 @@ void main() {
       sambaRouter
         ..put(
           method: httpMethod,
+          path: '/',
+          value: '$httpMethodName root',
+        )
+        ..put(
+          method: httpMethod,
           path: '/*',
           value: '$httpMethodName wildcard',
         )
@@ -64,6 +69,30 @@ void main() {
       final httpMethodName = httpMethod.name;
       test('Valid $httpMethodName test', () {
         Result<String>? result = sambaRouter.lookup(
+          method: httpMethod,
+          path: '/',
+        );
+        expect(
+          result?.value,
+          '$httpMethodName root',
+        );
+        expect(result?.pathParameters, isEmpty);
+        expect(result?.queryParameters, isEmpty);
+
+        result = sambaRouter.lookup(
+          method: httpMethod,
+          path: '?language=telugu&religion=hindu&religion=muslim',
+        );
+        expect(
+          result?.value,
+          '$httpMethodName root',
+        );
+        expect(result?.pathParameters, isEmpty);
+        expect(result?.queryParameters['language'], 'telugu');
+        expect(result?.queryParameters['religion'], ['hindu', 'muslim']);
+        expect(result?.queryParameters.length, 2);
+
+        result = sambaRouter.lookup(
           method: httpMethod,
           path: '/fruits',
         );
@@ -231,6 +260,20 @@ void main() {
       final httpMethodName = httpMethod.name;
       test('Clear $httpMethodName test', () {
         sambaRouter.clear();
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '',
+          ),
+          isNull,
+        );
         expect(
           sambaRouter.lookup(
             method: httpMethod,
