@@ -127,6 +127,139 @@ void main() {
 
     for (final httpMethod in httpMethods) {
       final httpMethodName = httpMethod.name;
+      test('Valid lookupEachPathSection $httpMethodName test', () {
+        Iterable<Result<String>>? results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: 'india',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethod small country',
+            pathParameters: {'country': 'india'},
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: 'INDIA',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethod capital country',
+            pathParameters: {'country': 'INDIA'},
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: 'india/andhra-pradesh',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethod small country',
+            pathParameters: {'country': 'india'},
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+          Result(
+            value: '$httpMethod small country & state',
+            pathParameters: {
+              'country': 'india',
+              'state': 'andhra-pradesh',
+            },
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: 'INDIA/ANDHRA-PRADESH',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethod capital country',
+            pathParameters: {'country': 'INDIA'},
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+          Result(
+            value: '$httpMethod capital country & state',
+            pathParameters: {'country': 'INDIA', 'state': 'ANDHRA-PRADESH'},
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: 'india/andhra-pradesh/kadapa/',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethod small country',
+            pathParameters: {'country': 'india'},
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+          Result(
+            value: '$httpMethod small country & state',
+            pathParameters: {
+              'country': 'india',
+              'state': 'andhra-pradesh',
+            },
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+          Result(
+            value: '$httpMethod small country, state & city',
+            pathParameters: {
+              'country': 'india',
+              'state': 'andhra-pradesh',
+              'city': 'kadapa',
+            },
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: 'INDIA/ANDHRA-PRADESH/KADAPA/',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethod capital country',
+            pathParameters: {'country': 'INDIA'},
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+          Result(
+            value: '$httpMethod capital country & state',
+            pathParameters: {'country': 'INDIA', 'state': 'ANDHRA-PRADESH'},
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+          Result(
+            value: '$httpMethod capital country, state & city',
+            pathParameters: {
+              'country': 'INDIA',
+              'state': 'ANDHRA-PRADESH',
+              'city': 'KADAPA',
+            },
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+        ]);
+      });
+    }
+
+    for (final httpMethod in httpMethods) {
+      final httpMethodName = httpMethod.name;
       test('Invalid $httpMethodName test', () {
         expect(
           sambaRouter.lookup(
@@ -214,6 +347,55 @@ void main() {
         );
         expect(
           sambaRouter.lookup(
+            method: httpMethod,
+            path: 'INDIA/ANDHRA-PRADESH/KADAPA',
+          ),
+          isNull,
+        );
+      });
+    }
+
+    for (final httpMethod in httpMethods) {
+      final httpMethodName = httpMethod.name;
+      test('Clear lookupEachPathSection $httpMethodName test', () {
+        sambaRouter.clear();
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: 'india',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: 'INDIA',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: 'india/andhra-pradesh',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: 'INDIA/ANDHRA-PRADESH',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: 'india/andhra-pradesh/kadapa',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
             method: httpMethod,
             path: 'INDIA/ANDHRA-PRADESH/KADAPA',
           ),

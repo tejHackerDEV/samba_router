@@ -140,42 +140,6 @@ void main() {
 
         result = sambaRouter.lookup(
           method: httpMethod,
-          path: '/countries/2424',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName dynamic number country',
-        );
-        expect(result?.pathParameters['country'], '2424');
-        expect(result?.pathParameters.length, 1);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/countries/2424/states',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName dynamic number country & state',
-        );
-        expect(result?.pathParameters['country'], '2424');
-        expect(result?.pathParameters.length, 1);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/countries/2424/states',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName dynamic number country & state',
-        );
-        expect(result?.pathParameters['country'], '2424');
-        expect(result?.pathParameters.length, 1);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
           path: '/countries/2424/states',
         );
         expect(
@@ -225,6 +189,249 @@ void main() {
         expect(result?.queryParameters['language'], 'telugu');
         expect(result?.queryParameters['religion'], ['hindu', 'muslim']);
         expect(result?.queryParameters.length, 2);
+      });
+    }
+
+    for (final httpMethod in httpMethods) {
+      final httpMethodName = httpMethod.name;
+      test('Valid lookupEachPathSection $httpMethodName test', () {
+        Iterable<Result<String>>? results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '?language=telugu&religion=hindu&religion=muslim',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {
+              'language': 'telugu',
+              'religion': ['hindu', 'muslim'],
+            },
+            nodeType: NodeType.static,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/fruits',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+          Result(
+            value: '$httpMethodName fruits',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/countries/india',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+          Result(
+            value: '$httpMethodName india',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/countries/pakistan',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+          Result(
+            value: '$httpMethodName dynamic country',
+            pathParameters: {
+              'country': 'pakistan',
+            },
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/countries/2424',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+          Result(
+            value: '$httpMethodName dynamic number country',
+            pathParameters: {
+              'country': '2424',
+            },
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/countries/2424/states',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+          Result(
+            value: '$httpMethodName dynamic number country',
+            pathParameters: {
+              'country': '2424',
+            },
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+          Result(
+            value: '$httpMethodName dynamic number country & state',
+            pathParameters: {
+              'country': '2424',
+            },
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/countries/bangladesh/random',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+          Result(
+            value: '$httpMethodName dynamic country',
+            pathParameters: {
+              'country': 'bangladesh',
+            },
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+          Result(
+            value: '$httpMethodName dynamic wildcard state',
+            pathParameters: {
+              'country': 'bangladesh',
+              '*': 'random',
+            },
+            queryParameters: {},
+            nodeType: NodeType.wildcard,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/countries/2424/random',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+          Result(
+            value: '$httpMethodName dynamic number country',
+            pathParameters: {
+              'country': '2424',
+            },
+            queryParameters: {},
+            nodeType: NodeType.parametric,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/random/2424/random',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+          Result(
+            value: '$httpMethodName wildcard',
+            pathParameters: {
+              '*': 'random/2424/random',
+            },
+            queryParameters: {},
+            nodeType: NodeType.wildcard,
+          ),
+        ]);
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path:
+              '/random/2424/random?language=telugu&religion=hindu&religion=muslim',
+        );
+        expect(results, [
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {
+              'language': 'telugu',
+              'religion': ['hindu', 'muslim'],
+            },
+            nodeType: NodeType.static,
+          ),
+          Result(
+            value: '$httpMethodName wildcard',
+            pathParameters: {
+              '*': 'random/2424/random',
+            },
+            queryParameters: {
+              'language': 'telugu',
+              'religion': ['hindu', 'muslim'],
+            },
+            nodeType: NodeType.wildcard,
+          ),
+        ]);
       });
     }
 
@@ -325,6 +532,84 @@ void main() {
         );
         expect(
           sambaRouter.lookup(
+            method: httpMethod,
+            path:
+                '/countries/2424/random?language=telugu&religion=hindu&religion=muslim',
+          ),
+          isNull,
+        );
+      });
+    }
+
+    for (final httpMethod in httpMethods) {
+      final httpMethodName = httpMethod.name;
+      test('Clear lookupEachPathSection $httpMethodName test', () {
+        sambaRouter.clear();
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '/',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '/countries',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '/fruits',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '/countries/india',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '/countries/pakistan',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '/countries/2424',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '/countries/2424/random',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '/countries/bangladesh/random',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
             method: httpMethod,
             path:
                 '/countries/2424/random?language=telugu&religion=hindu&religion=muslim',

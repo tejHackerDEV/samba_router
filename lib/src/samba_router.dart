@@ -116,8 +116,11 @@ class SambaRouter<T> {
     return Result<T>(
       value: value,
       pathParameters: pathParameters,
-      queryParameters:
-          decodedPath.queryString?.extractQueryParameters(encoding: utf8) ?? {},
+      queryParameters: decodedPath.queryString?.extractQueryParameters(
+            encoding: utf8,
+          ) ??
+          {},
+      nodeType: currentNode!.type,
     );
   }
 
@@ -190,6 +193,67 @@ class SambaRouter<T> {
       return tempNode;
     }
     return null;
+  }
+
+  Iterable<Result<T>>? lookupEachPathSection({
+    required HttpMethod method,
+    required String path,
+  }) {
+    final results = <Result<T>>[];
+
+    final decodedPath = path.decodePath();
+    // In an order to traverse the rootPath
+    // we need to lookup empty pathSection.
+    //
+    // Otherwise, we skip looking up the value under rootPath.
+    // So if this condition is false, try to force lookup by
+    // by empty pathSection, before even trying for
+    // actual decodedPathSection.
+    //
+    // Remove this condition will cause severe issues unless we change
+    // the way of decoding the pathSections.
+    bool didRootPathTraversed = decodedPath.sections.isEmpty;
+    int traversedCount = 0;
+
+    do {
+      final Iterable<String> pathSections;
+      if (!didRootPathTraversed) {
+        pathSections = Iterable.empty();
+        didRootPathTraversed = true;
+      } else {
+        pathSections = decodedPath.sections.take(traversedCount + 1);
+        traversedCount++;
+      }
+
+      final path = StringBuffer();
+      path.writeAll(pathSections, '/');
+      // addBack queryString to the path if any
+      if (decodedPath.queryString != null) {
+        path.write('?${decodedPath.queryString}');
+      }
+
+      final result = lookup(
+        method: method,
+        path: path.toString(),
+      );
+      // add the result only if its not null
+      if (result != null) {
+        results.add(result);
+        // if the retuned result is from wildcard node,
+        // then break the loop by updating the pathParameters
+        // by adding remaining pathSections
+        if (result.nodeType == NodeType.wildcard) {
+          result.pathParameters['*'] =
+              decodedPath.sections.skip(traversedCount - 1).join('/');
+          break;
+        }
+      }
+    } while (traversedCount < (decodedPath.sections.length));
+
+    if (results.isEmpty) {
+      return null;
+    }
+    return results;
   }
 
   void clear() {

@@ -136,6 +136,116 @@ void main() {
 
     for (final httpMethod in httpMethods) {
       final httpMethodName = httpMethod.name;
+      test('Valid lookupEachPathSection $httpMethodName test', () {
+        Iterable<Result<String>>? results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/',
+        );
+        expect(results?.length, 1);
+        expect(
+          results?.elementAt(0),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+        );
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/countries',
+        );
+        expect(results?.length, 2);
+        expect(
+          results?.elementAt(0),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+        );
+        expect(
+          results?.elementAt(1),
+          Result(
+            value: '$httpMethodName countries',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+        );
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/countries/india',
+        );
+        expect(results?.length, 3);
+        expect(
+          results?.elementAt(0),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+        );
+        expect(
+          results?.elementAt(1),
+          Result(
+            value: '$httpMethodName countries',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+        );
+        expect(
+          results?.elementAt(2),
+          Result(
+            value: '$httpMethodName india',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+        );
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/countries/india/random',
+        );
+        expect(results?.length, 3);
+        expect(
+          results?.elementAt(0),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+        );
+        expect(
+          results?.elementAt(1),
+          Result(
+            value: '$httpMethodName countries',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+        );
+        expect(
+          results?.elementAt(2),
+          Result(
+            value: '$httpMethodName india',
+            pathParameters: {},
+            queryParameters: {},
+            nodeType: NodeType.static,
+          ),
+        );
+      });
+    }
+
+    for (final httpMethod in httpMethods) {
+      final httpMethodName = httpMethod.name;
       test('Invalid $httpMethodName test', () {
         expect(
           sambaRouter
@@ -304,6 +414,40 @@ void main() {
                 path: '/fruits/apple',
               )
               ?.value,
+          isNull,
+        );
+      });
+    }
+
+    for (final httpMethod in httpMethods) {
+      final httpMethodName = httpMethod.name;
+      test('Clear lookupEachPathSection $httpMethodName test', () {
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '/',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '/countries',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '/countries/india',
+          ),
+          isNull,
+        );
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '/countries/random',
+          ),
           isNull,
         );
       });

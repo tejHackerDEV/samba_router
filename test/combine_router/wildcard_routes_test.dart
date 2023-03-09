@@ -145,6 +145,41 @@ void main() {
 
     for (final httpMethod in httpMethods) {
       final httpMethodName = httpMethod.name;
+      test('Valid lookupEachPathSection $httpMethodName test', () {
+        Iterable<Result<String>>? results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/india/telangana',
+        );
+        expect(results?.length, 1);
+        expect(
+          results?.elementAt(0),
+          Result(
+            value: '$httpMethodName wildcard state',
+            pathParameters: {'*': 'telangana'},
+            queryParameters: {},
+            nodeType: NodeType.wildcard,
+          ),
+        );
+
+        results = sambaRouter.lookupEachPathSection(
+          method: httpMethod,
+          path: '/fruits/red/apples',
+        );
+        expect(results?.length, 1);
+        expect(
+          results?.elementAt(0),
+          Result(
+            value: '$httpMethodName wildcard fruit',
+            pathParameters: {'*': 'red/apples'},
+            queryParameters: {},
+            nodeType: NodeType.wildcard,
+          ),
+        );
+      });
+    }
+
+    for (final httpMethod in httpMethods) {
+      final httpMethodName = httpMethod.name;
       test('Invalid $httpMethodName test', () {
         expect(
           sambaRouter.lookup(
@@ -248,6 +283,27 @@ void main() {
           sambaRouter.lookup(
             method: httpMethod,
             path: '/random',
+          ),
+          isNull,
+        );
+      });
+    }
+
+    for (final httpMethod in httpMethods) {
+      final httpMethodName = httpMethod.name;
+      test('Clear lookupEachPathSection $httpMethodName test', () {
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '/india/telangana',
+          ),
+          isNull,
+        );
+
+        expect(
+          sambaRouter.lookupEachPathSection(
+            method: httpMethod,
+            path: '/fruits/red/apples',
           ),
           isNull,
         );
