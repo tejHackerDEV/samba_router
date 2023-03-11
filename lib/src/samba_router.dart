@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:samba_helpers/samba_helpers.dart';
 import 'package:samba_router/src/extensions/iterable.dart';
 import 'package:samba_router/src/extensions/string.dart';
-import 'package:samba_helpers/samba_helpers.dart';
 
 import 'enum/node_type.dart';
 import 'enum/parametric_node_type.dart';
