@@ -2,6 +2,8 @@ import 'package:samba_helpers/samba_helpers.dart';
 import 'package:samba_router/samba_router.dart';
 import 'package:test/test.dart';
 
+import 'utils/constants.dart';
+
 void main() {
   group('Wildcard Routes test', () {
     final sambaRouter = SambaRouter<String>();
@@ -40,134 +42,217 @@ void main() {
     for (final httpMethod in httpMethods) {
       final httpMethodName = httpMethod.name;
       test('Valid $httpMethodName test', () {
-        Result<String>? result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/india/telangana',
-        );
         expect(
-          result?.value,
-          '$httpMethodName wildcard state',
-        );
-        expect(result?.pathParameters['*'], 'telangana');
-        expect(result?.pathParameters.length, 1);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/india/2424/',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName wildcard state',
-        );
-        expect(result?.pathParameters['*'], '2424');
-        expect(result?.pathParameters.length, 1);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/india/andhra-pradesh/cuddapah',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName wildcard city',
-        );
-        expect(result?.pathParameters['*'], 'cuddapah');
-        expect(result?.pathParameters.length, 1);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/india/andhra-pradesh/kadapa/bhagya-nagar-colony/',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName wildcard street',
-        );
-        expect(result?.pathParameters['*'], 'bhagya-nagar-colony');
-        expect(result?.pathParameters.length, 1);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/india/andhra-pradesh/kadapa/ngo-colony',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName wildcard street',
-        );
-        expect(result?.pathParameters['*'], 'ngo-colony');
-        expect(result?.pathParameters.length, 1);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/fruits/apple',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName wildcard fruit',
-        );
-        expect(result?.pathParameters['*'], 'apple');
-        expect(result?.pathParameters.length, 1);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/fruits/apple/1234',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName wildcard fruit',
-        );
-        expect(result?.pathParameters['*'], 'apple/1234');
-        expect(result?.pathParameters.length, 1);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/random',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName wildcard',
-        );
-        expect(result?.pathParameters['*'], 'random');
-        expect(result?.pathParameters.length, 1);
-        expect(result?.queryParameters, isEmpty);
-      });
-    }
-
-    for (final httpMethod in httpMethods) {
-      final httpMethodName = httpMethod.name;
-      test('Valid lookupEachPathSection $httpMethodName test', () {
-        Iterable<Result<String>>? results = sambaRouter.lookupEachPathSection(
-          method: httpMethod,
-          path: '/india/telangana',
-        );
-        expect(results?.length, 1);
-        expect(
-          results?.elementAt(0),
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/telangana',
+          ),
           Result(
-            value: '$httpMethodName wildcard state',
-            pathParameters: {'*': 'telangana'},
+            value: null,
+            pathParameters: {},
             queryParameters: {},
-            nodeType: NodeType.wildcard,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName wildcard state',
+                pathParameters: {'*': 'telangana'},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
           ),
         );
 
-        results = sambaRouter.lookupEachPathSection(
-          method: httpMethod,
-          path: '/india/telangana/hyderabad',
-        );
-        expect(results?.length, 1);
         expect(
-          results?.elementAt(0),
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/2424',
+          ),
           Result(
-            value: '$httpMethodName wildcard state',
-            pathParameters: {'*': 'telangana/hyderabad'},
+            value: null,
+            pathParameters: {},
             queryParameters: {},
-            nodeType: NodeType.wildcard,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName wildcard state',
+                pathParameters: {'*': '2424'},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/andhra-pradesh/cuddapah',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: Result(
+                  value: '$httpMethodName wildcard city',
+                  pathParameters: {'*': 'cuddapah'},
+                  queryParameters: {},
+                  child: null,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/andhra-pradesh/kadapa/bhagya-nagar-colony/',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: Result(
+                  value: null,
+                  pathParameters: {},
+                  queryParameters: {},
+                  child: Result(
+                    value: '$httpMethodName wildcard street',
+                    pathParameters: {
+                      '*': 'bhagya-nagar-colony',
+                    },
+                    queryParameters: {},
+                    child: null,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/andhra-pradesh/kadapa/ngo-colony',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: Result(
+                  value: null,
+                  pathParameters: {},
+                  queryParameters: {},
+                  child: Result(
+                    value: '$httpMethodName wildcard street',
+                    pathParameters: {
+                      '*': 'ngo-colony',
+                    },
+                    queryParameters: {},
+                    child: null,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits/apple',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName wildcard fruit',
+                pathParameters: {
+                  '*': 'apple',
+                },
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits/apple/1234',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName wildcard fruit',
+                pathParameters: {
+                  '*': 'apple/1234',
+                },
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/random',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName wildcard',
+              pathParameters: {
+                '*': 'random',
+              },
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
       });
@@ -181,21 +266,67 @@ void main() {
             method: httpMethod,
             path: '/fruits',
           ),
-          isNull,
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
         );
+
         expect(
           sambaRouter.lookup(
             method: httpMethod,
             path: '/india/andhra-pradesh',
           ),
-          isNull,
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
         );
         expect(
           sambaRouter.lookup(
             method: httpMethod,
             path: '/india/andhra-pradesh/kadapa',
           ),
-          isNull,
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: Result(
+                  value: null,
+                  pathParameters: {},
+                  queryParameters: {},
+                  child: null,
+                ),
+              ),
+            ),
+          ),
         );
       });
     }
@@ -209,97 +340,511 @@ void main() {
             method: httpMethod,
             path: '/india/telangana',
           ),
-          isNull,
+          kEmptyResult,
         );
+
         expect(
           sambaRouter.lookup(
             method: httpMethod,
             path: '/india/2424',
           ),
-          isNull,
+          kEmptyResult,
         );
+
         expect(
           sambaRouter.lookup(
             method: httpMethod,
             path: '/india/andhra-pradesh',
           ),
-          isNull,
+          kEmptyResult,
         );
         expect(
           sambaRouter.lookup(
             method: httpMethod,
             path: '/india/andhra-pradesh/kadapa',
           ),
-          isNull,
+          kEmptyResult,
         );
+
         expect(
           sambaRouter.lookup(
             method: httpMethod,
             path: '/india/andhra-pradesh/cuddapah',
           ),
-          isNull,
+          kEmptyResult,
         );
+
         expect(
           sambaRouter.lookup(
             method: httpMethod,
             path: '/india/andhra-pradesh/kadapa/bhagya-nagar-colony',
           ),
-          isNull,
+          kEmptyResult,
         );
+
         expect(
           sambaRouter.lookup(
             method: httpMethod,
             path: '/india/andhra-pradesh/kadapa/ngo-colony',
           ),
-          isNull,
+          kEmptyResult,
         );
+
         expect(
           sambaRouter.lookup(
             method: httpMethod,
             path: '/fruits/apple',
           ),
-          isNull,
+          kEmptyResult,
         );
+
         expect(
           sambaRouter.lookup(
             method: httpMethod,
             path: '/fruits/apple/1234',
           ),
-          isNull,
+          kEmptyResult,
         );
+
         expect(
           sambaRouter.lookup(
             method: httpMethod,
             path: '/fruits',
           ),
-          isNull,
+          kEmptyResult,
         );
+
         expect(
           sambaRouter.lookup(
             method: httpMethod,
             path: '/random',
           ),
-          isNull,
+          kEmptyResult,
+        );
+      });
+    }
+  });
+
+  group('Combine Router Wildcard Routes test', () {
+    final sambaRouter = SambaRouter<String>();
+    final otherSambaRouter = SambaRouter<String>();
+
+    final httpMethods = HttpMethod.values;
+    for (final httpMethod in httpMethods) {
+      final httpMethodName = httpMethod.name;
+      sambaRouter
+        ..put(
+          method: httpMethod,
+          path: '/india/*',
+          value: '$httpMethodName wildcard state',
+        )
+        ..put(
+          method: httpMethod,
+          path: '/india/andhra-pradesh/*',
+          value: '$httpMethodName wildcard city',
+        )
+        ..put(
+          method: httpMethod,
+          path: '/india/andhra-pradesh/kadapa/*/',
+          value: '$httpMethodName wildcard street',
+        );
+
+      otherSambaRouter
+        ..put(
+          method: httpMethod,
+          path: '/fruits/*',
+          value: '$httpMethodName wildcard fruit',
+        )
+        ..put(
+          method: httpMethod,
+          path: '/*',
+          value: '$httpMethodName wildcard',
+        );
+    }
+
+    sambaRouter.combineWith(otherSambaRouter);
+
+    for (final httpMethod in httpMethods) {
+      final httpMethodName = httpMethod.name;
+      test('Valid $httpMethodName test', () {
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/telangana',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName wildcard state',
+                pathParameters: {'*': 'telangana'},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/2424',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName wildcard state',
+                pathParameters: {'*': '2424'},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/andhra-pradesh/cuddapah',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: Result(
+                  value: '$httpMethodName wildcard city',
+                  pathParameters: {'*': 'cuddapah'},
+                  queryParameters: {},
+                  child: null,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/andhra-pradesh/kadapa/bhagya-nagar-colony/',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: Result(
+                  value: null,
+                  pathParameters: {},
+                  queryParameters: {},
+                  child: Result(
+                    value: '$httpMethodName wildcard street',
+                    pathParameters: {
+                      '*': 'bhagya-nagar-colony',
+                    },
+                    queryParameters: {},
+                    child: null,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/andhra-pradesh/kadapa/ngo-colony',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: Result(
+                  value: null,
+                  pathParameters: {},
+                  queryParameters: {},
+                  child: Result(
+                    value: '$httpMethodName wildcard street',
+                    pathParameters: {
+                      '*': 'ngo-colony',
+                    },
+                    queryParameters: {},
+                    child: null,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits/apple',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName wildcard fruit',
+                pathParameters: {
+                  '*': 'apple',
+                },
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits/apple/1234',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName wildcard fruit',
+                pathParameters: {
+                  '*': 'apple/1234',
+                },
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/random',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName wildcard',
+              pathParameters: {
+                '*': 'random',
+              },
+              queryParameters: {},
+              child: null,
+            ),
+          ),
         );
       });
     }
 
     for (final httpMethod in httpMethods) {
       final httpMethodName = httpMethod.name;
-      test('Clear lookupEachPathSection $httpMethodName test', () {
+      test('Invalid $httpMethodName test', () {
         expect(
-          sambaRouter.lookupEachPathSection(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/andhra-pradesh',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
+        );
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/andhra-pradesh/kadapa',
+          ),
+          Result(
+            value: null,
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: Result(
+                  value: null,
+                  pathParameters: {},
+                  queryParameters: {},
+                  child: null,
+                ),
+              ),
+            ),
+          ),
+        );
+      });
+    }
+
+    for (final httpMethod in httpMethods) {
+      final httpMethodName = httpMethod.name;
+      test('Clear $httpMethodName test', () {
+        sambaRouter.clear();
+        expect(
+          sambaRouter.lookup(
             method: httpMethod,
             path: '/india/telangana',
           ),
-          isNull,
+          kEmptyResult,
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/2424',
+          ),
+          kEmptyResult,
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/andhra-pradesh',
+          ),
+          kEmptyResult,
         );
         expect(
-          sambaRouter.lookupEachPathSection(
+          sambaRouter.lookup(
             method: httpMethod,
-            path: '/india/telangana/hyderabad',
+            path: '/india/andhra-pradesh/kadapa',
           ),
-          isNull,
+          kEmptyResult,
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/andhra-pradesh/cuddapah',
+          ),
+          kEmptyResult,
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/andhra-pradesh/kadapa/bhagya-nagar-colony',
+          ),
+          kEmptyResult,
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/india/andhra-pradesh/kadapa/ngo-colony',
+          ),
+          kEmptyResult,
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits/apple',
+          ),
+          kEmptyResult,
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits/apple/1234',
+          ),
+          kEmptyResult,
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits',
+          ),
+          kEmptyResult,
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/random',
+          ),
+          kEmptyResult,
         );
       });
     }

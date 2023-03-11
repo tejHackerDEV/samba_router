@@ -2,6 +2,8 @@ import 'package:samba_helpers/samba_helpers.dart';
 import 'package:samba_router/samba_router.dart';
 import 'package:test/test.dart';
 
+import 'utils/constants.dart';
+
 void main() {
   group('Static Routes test', () {
     final sambaRouter = SambaRouter<String>();
@@ -55,190 +57,144 @@ void main() {
     for (final httpMethod in httpMethods) {
       final httpMethodName = httpMethod.name;
       test('Valid $httpMethodName test', () {
-        Result<String>? result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/',
-        );
         expect(
-          result?.value,
-          '$httpMethodName root',
-        );
-        expect(result?.pathParameters.isEmpty, isTrue);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/countries',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName countries',
-        );
-        expect(result?.pathParameters.isEmpty, isTrue);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/countries/india',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName india',
-        );
-        expect(result?.pathParameters.isEmpty, isTrue);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/countries/pakistan/',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName pakistan',
-        );
-        expect(result?.pathParameters.isEmpty, isTrue);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/states',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName states',
-        );
-        expect(result?.pathParameters.isEmpty, isTrue);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/states/andhra-pradesh',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName andhra-pradesh',
-        );
-        expect(result?.pathParameters.isEmpty, isTrue);
-        expect(result?.queryParameters, isEmpty);
-
-        result = sambaRouter.lookup(
-          method: httpMethod,
-          path: '/fruits/apple',
-        );
-        expect(
-          result?.value,
-          '$httpMethodName apple',
-        );
-        expect(result?.pathParameters.isEmpty, isTrue);
-        expect(result?.queryParameters, isEmpty);
-      });
-    }
-
-    for (final httpMethod in httpMethods) {
-      final httpMethodName = httpMethod.name;
-      test('Valid lookupEachPathSection $httpMethodName test', () {
-        Iterable<Result<String>>? results = sambaRouter.lookupEachPathSection(
-          method: httpMethod,
-          path: '/',
-        );
-        expect(results?.length, 1);
-        expect(
-          results?.elementAt(0),
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/',
+          ),
           Result(
             value: '$httpMethodName root',
             pathParameters: {},
             queryParameters: {},
-            nodeType: NodeType.static,
+            child: null,
           ),
         );
 
-        results = sambaRouter.lookupEachPathSection(
-          method: httpMethod,
-          path: '/countries',
-        );
-        expect(results?.length, 2);
         expect(
-          results?.elementAt(0),
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries',
+          ),
           Result(
             value: '$httpMethodName root',
             pathParameters: {},
             queryParameters: {},
-            nodeType: NodeType.static,
-          ),
-        );
-        expect(
-          results?.elementAt(1),
-          Result(
-            value: '$httpMethodName countries',
-            pathParameters: {},
-            queryParameters: {},
-            nodeType: NodeType.static,
+            child: Result(
+              value: '$httpMethodName countries',
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
-        results = sambaRouter.lookupEachPathSection(
-          method: httpMethod,
-          path: '/countries/india',
-        );
-        expect(results?.length, 3);
         expect(
-          results?.elementAt(0),
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries/india',
+          ),
           Result(
             value: '$httpMethodName root',
             pathParameters: {},
             queryParameters: {},
-            nodeType: NodeType.static,
-          ),
-        );
-        expect(
-          results?.elementAt(1),
-          Result(
-            value: '$httpMethodName countries',
-            pathParameters: {},
-            queryParameters: {},
-            nodeType: NodeType.static,
-          ),
-        );
-        expect(
-          results?.elementAt(2),
-          Result(
-            value: '$httpMethodName india',
-            pathParameters: {},
-            queryParameters: {},
-            nodeType: NodeType.static,
+            child: Result(
+              value: '$httpMethodName countries',
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName india',
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
           ),
         );
 
-        results = sambaRouter.lookupEachPathSection(
-          method: httpMethod,
-          path: '/countries/india/random',
-        );
-        expect(results?.length, 3);
         expect(
-          results?.elementAt(0),
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries/pakistan/',
+          ),
           Result(
             value: '$httpMethodName root',
             pathParameters: {},
             queryParameters: {},
-            nodeType: NodeType.static,
+            child: Result(
+              value: '$httpMethodName countries',
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName pakistan',
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
           ),
         );
+
         expect(
-          results?.elementAt(1),
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/states',
+          ),
           Result(
-            value: '$httpMethodName countries',
+            value: '$httpMethodName root',
             pathParameters: {},
             queryParameters: {},
-            nodeType: NodeType.static,
+            child: Result(
+              value: '$httpMethodName states',
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
+
         expect(
-          results?.elementAt(2),
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/states/andhra-pradesh',
+          ),
           Result(
-            value: '$httpMethodName india',
+            value: '$httpMethodName root',
             pathParameters: {},
             queryParameters: {},
-            nodeType: NodeType.static,
+            child: Result(
+              value: '$httpMethodName states',
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName andhra-pradesh',
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits/apple',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName apple',
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
           ),
         );
       });
@@ -248,103 +204,181 @@ void main() {
       final httpMethodName = httpMethod.name;
       test('Invalid $httpMethodName test', () {
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/random',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/random',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: null,
+          ),
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/countries/in/dia',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries/in/dia',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName countries',
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/countries/pak/stan',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries/pak/stan',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName countries',
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/countries/bangladesh',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries/bangladesh',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName countries',
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/states/telangana',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/states/telangana',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName states',
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/fruits',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/fru-its',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fru-its',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: null,
+          ),
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/fruits/app/le',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits/app/le',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/fru/its/pineapple',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fru/its/pineapple',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: null,
+          ),
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/fru/its/ban/ana',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fru/its/ban/ana',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: null,
+          ),
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/fruits/straw-berry',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits/straw-berry',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
         );
       });
     }
@@ -354,101 +388,505 @@ void main() {
       test('Clear $httpMethodName test', () {
         sambaRouter.clear();
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/',
+          ),
+          kEmptyResult,
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/countries',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries',
+          ),
+          kEmptyResult,
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/countries/india',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries/india',
+          ),
+          kEmptyResult,
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/countries/pakistan',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries/pakistan',
+          ),
+          kEmptyResult,
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/states',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/states',
+          ),
+          kEmptyResult,
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/states/andhra-pradesh',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/states/andhra-pradesh',
+          ),
+          kEmptyResult,
         );
+
         expect(
-          sambaRouter
-              .lookup(
-                method: httpMethod,
-                path: '/fruits/apple',
-              )
-              ?.value,
-          isNull,
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits/apple',
+          ),
+          kEmptyResult,
+        );
+      });
+    }
+  });
+
+  group('Combine Router Static Routes test', () {
+    final sambaRouter = SambaRouter<String>();
+    final otherSambaRouter = SambaRouter<String>();
+
+    final httpMethods = HttpMethod.values;
+    for (final httpMethod in httpMethods) {
+      final httpMethodName = httpMethod.name;
+      sambaRouter
+        ..put(
+          method: httpMethod,
+          path: '/countries',
+          value: '$httpMethodName countries',
+        )
+        ..put(
+          method: httpMethod,
+          path: '/countries/india/',
+          value: '$httpMethodName india',
+        )
+        ..put(
+          method: httpMethod,
+          path: '/countries/pakistan',
+          value: '$httpMethodName pakistan',
+        );
+
+      otherSambaRouter
+        ..put(
+          method: httpMethod,
+          path: '/',
+          value: '$httpMethodName root',
+        )
+        ..put(
+          method: httpMethod,
+          path: '/countries/afghanistan',
+          value: '$httpMethodName afghanistan',
+        )
+        ..put(
+          method: httpMethod,
+          path: '/states',
+          value: '$httpMethodName states',
+        )
+        ..put(
+          method: httpMethod,
+          path: '/states/andhra-pradesh',
+          value: '$httpMethodName andhra-pradesh',
+        )
+        ..put(
+          method: httpMethod,
+          path: '/fruits/apple',
+          value: '$httpMethodName apple',
+        );
+    }
+
+    sambaRouter.combineWith(otherSambaRouter);
+
+    for (final httpMethod in httpMethods) {
+      final httpMethodName = httpMethod.name;
+      test('Valid $httpMethodName test', () {
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: null,
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName countries',
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries/india',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName countries',
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName india',
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries/pakistan/',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName countries',
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName pakistan',
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/states',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName states',
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/states/andhra-pradesh',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName states',
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName andhra-pradesh',
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits/apple',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: '$httpMethodName apple',
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
         );
       });
     }
 
     for (final httpMethod in httpMethods) {
       final httpMethodName = httpMethod.name;
-      test('Clear lookupEachPathSection $httpMethodName test', () {
+      test('Invalid $httpMethodName test', () {
         expect(
-          sambaRouter.lookupEachPathSection(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/random',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: null,
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries/in/dia',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName countries',
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries/pak/stan',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName countries',
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/countries/bangladesh',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName countries',
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/states/telangana',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: '$httpMethodName states',
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fru-its',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: null,
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits/app/le',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fru/its/pineapple',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: null,
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fru/its/ban/ana',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: null,
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits/straw-berry',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
+          ),
+        );
+      });
+    }
+
+    for (final httpMethod in httpMethods) {
+      final httpMethodName = httpMethod.name;
+      test('Clear $httpMethodName test', () {
+        sambaRouter.clear();
+        expect(
+          sambaRouter.lookup(
             method: httpMethod,
             path: '/',
           ),
-          isNull,
+          kEmptyResult,
         );
+
         expect(
-          sambaRouter.lookupEachPathSection(
+          sambaRouter.lookup(
             method: httpMethod,
             path: '/countries',
           ),
-          isNull,
+          kEmptyResult,
         );
+
         expect(
-          sambaRouter.lookupEachPathSection(
+          sambaRouter.lookup(
             method: httpMethod,
             path: '/countries/india',
           ),
-          isNull,
+          kEmptyResult,
         );
+
         expect(
-          sambaRouter.lookupEachPathSection(
+          sambaRouter.lookup(
             method: httpMethod,
-            path: '/countries/random',
+            path: '/countries/pakistan',
           ),
-          isNull,
+          kEmptyResult,
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/states',
+          ),
+          kEmptyResult,
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/states/andhra-pradesh',
+          ),
+          kEmptyResult,
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fruits/apple',
+          ),
+          kEmptyResult,
         );
       });
     }

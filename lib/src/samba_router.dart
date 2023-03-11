@@ -89,171 +89,136 @@ class SambaRouter<T> {
     currentNode.value = value;
   }
 
-  Result<T>? lookup({
+  Result<T> lookup({
     required HttpMethod method,
     required String path,
   }) {
     Node<T>? currentNode = _trees[method];
     if (currentNode == null) {
-      return null;
-    }
-
-    final Map<String, String> pathParameters = {};
-    final decodedPath = path.decodePath();
-    // only try looking-up for a route, if the pathSections are not empty.
-    if (decodedPath.sections.isNotEmpty) {
-      currentNode = _lookup(
-        pathSections: decodedPath.sections,
-        currentNode: currentNode,
-        pathParameters: pathParameters,
+      return Result(
+        value: null,
+        pathParameters: {},
+        queryParameters: {},
+        child: null,
       );
     }
 
-    final value = currentNode?.value;
-    if (value == null) {
-      return null;
-    }
-    return Result<T>(
-      value: value,
+    final decodedPath = path.decodePath();
+    final pathParameters = <String, String>{};
+    final queryParameters = decodedPath.queryString?.extractQueryParameters(
+          encoding: utf8,
+        ) ??
+        {};
+
+    return Result(
+      value: currentNode.value,
       pathParameters: pathParameters,
-      queryParameters: decodedPath.queryString?.extractQueryParameters(
-            encoding: utf8,
-          ) ??
-          {},
-      nodeType: currentNode!.type,
+      queryParameters: queryParameters,
+      // if pathSections are empty don't try lookup simply return null
+      // else lookup through the pathSection & return as child
+      child: decodedPath.sections.isEmpty
+          ? null
+          : _lookup(
+              pathSections: decodedPath.sections,
+              currentNode: currentNode,
+              pathParameters: Map.from(pathParameters),
+              queryParameters: queryParameters,
+            ),
     );
   }
 
-  Node<T>? _lookup({
+  Result<T>? _lookup({
     required Iterable<String> pathSections,
-    required Node<T>? currentNode,
+    required Node<T> currentNode,
     required Map<String, String> pathParameters,
+    required Map<String, dynamic> queryParameters,
   }) {
     final pathSection = pathSections.first;
-    Node<T>? tempNode = currentNode?.staticChildNodes[pathSection];
+    Node<T>? tempNode = currentNode.staticChildNodes[pathSection];
     if (tempNode != null) {
-      if (pathSections.containsOnlyOneElement) {
-        // as it contains only one elementimply return it
-        return tempNode;
-      }
-      // still some pathSections are remaining so keep looking forward
-      // with the found Node
-      return _lookup(
-        pathSections: pathSections.skip(1),
-        currentNode: tempNode,
+      return Result(
+        value: tempNode.value,
         pathParameters: pathParameters,
+        queryParameters: queryParameters,
+        // if pathSections contains only oneElement
+        // then don't try lookup simply return child as null
+        // else lookup through the pathSection
+        child: pathSections.containsOnlyOneElement
+            ? null
+            : _lookup(
+                pathSections: pathSections.skip(1),
+                currentNode: tempNode,
+                pathParameters: Map.from(pathParameters),
+                queryParameters: queryParameters,
+              ),
       );
     }
 
-    // not found in static routeo look in parametricChildNodes
+    // not found in static route so look in parametricChildNodes
     // at first look in regExpParametricChildNodes
-    for (int j = 0;
-        j < (currentNode?.regExpParametricChildNodes.length ?? 0);
-        ++j) {
-      tempNode = currentNode!.regExpParametricChildNodes[j];
-      // it is an regExp oneo check regExp matches the pathSection
+    for (int j = 0; j < currentNode.regExpParametricChildNodes.length; ++j) {
+      tempNode = currentNode.regExpParametricChildNodes[j];
+      // it is an regExp one so check regExp matches the pathSection
       if (!tempNode.parameterRegExp!.hasMatch(pathSection)) {
-        // match not foundo skip the iteration
+        // match not found so skip the iteration
         continue;
       }
       pathParameters[tempNode.parameterName] = pathSection;
-      if (pathSections.containsOnlyOneElement) {
-        // as it contains only one elementimply return it
-        return tempNode;
-      }
-      return _lookup(
-        pathSections: pathSections.skip(1),
-        currentNode: tempNode,
+      return Result(
+        value: tempNode.value,
         pathParameters: pathParameters,
+        queryParameters: queryParameters,
+        // if pathSections contains only oneElement
+        // then don't try lookup simply return child as null
+        // else lookup through the pathSection
+        child: pathSections.containsOnlyOneElement
+            ? null
+            : _lookup(
+                pathSections: pathSections.skip(1),
+                currentNode: tempNode,
+                pathParameters: Map.from(pathParameters),
+                queryParameters: queryParameters,
+              ),
       );
     }
 
-    // notFound in regExpParametricChildNodeso look in nonExpParametricChild
-    tempNode = currentNode?.nonRegExpParametricChild;
+    // notFound in regExpParametricChildNode so look in nonExpParametricChild
+    tempNode = currentNode.nonRegExpParametricChild;
     if (tempNode != null) {
-      // it is an non-regexo don't check anything
+      // it is an non-regexp so don't check anything
       pathParameters[tempNode.parameterName] = pathSection;
-      if (pathSections.containsOnlyOneElement) {
-        // as it contains only one elementimply return it
-        return tempNode;
-      }
-      return _lookup(
-        pathSections: pathSections.skip(1),
-        currentNode: tempNode,
+      return Result(
+        value: tempNode.value,
         pathParameters: pathParameters,
+        queryParameters: queryParameters,
+        // if pathSections contains only oneElement
+        // then don't try lookup simply return child as null
+        // else lookup through the pathSection
+        child: pathSections.containsOnlyOneElement
+            ? null
+            : _lookup(
+                pathSections: pathSections.skip(1),
+                currentNode: tempNode,
+                pathParameters: Map.from(pathParameters),
+                queryParameters: queryParameters,
+              ),
       );
     }
 
     // route not found in parametricNodes so check for wildcardNode
-    tempNode = currentNode?.wildcardNode;
+    tempNode = currentNode.wildcardNode;
     if (tempNode != null) {
       // wildcardNode found so update the pathParameters
       // & return it
       pathParameters['*'] = pathSections.join('/');
-      return tempNode;
+      return Result(
+        value: tempNode.value,
+        pathParameters: pathParameters,
+        queryParameters: queryParameters,
+        child: null,
+      );
     }
     return null;
-  }
-
-  Iterable<Result<T>>? lookupEachPathSection({
-    required HttpMethod method,
-    required String path,
-  }) {
-    final results = <Result<T>>[];
-
-    final decodedPath = path.decodePath();
-    // In an order to traverse the rootPath
-    // we need to lookup empty pathSection.
-    //
-    // Otherwise, we skip looking up the value under rootPath.
-    // So if this condition is false, try to force lookup by
-    // by empty pathSection, before even trying for
-    // actual decodedPathSection.
-    //
-    // Remove this condition will cause severe issues unless we change
-    // the way of decoding the pathSections.
-    bool didRootPathTraversed = decodedPath.sections.isEmpty;
-    int traversedCount = 0;
-
-    do {
-      final Iterable<String> pathSections;
-      if (!didRootPathTraversed) {
-        pathSections = Iterable.empty();
-        didRootPathTraversed = true;
-      } else {
-        pathSections = decodedPath.sections.take(traversedCount + 1);
-        traversedCount++;
-      }
-
-      final path = StringBuffer();
-      path.writeAll(pathSections, '/');
-      // addBack queryString to the path if any
-      if (decodedPath.queryString != null) {
-        path.write('?${decodedPath.queryString}');
-      }
-
-      final result = lookup(
-        method: method,
-        path: path.toString(),
-      );
-      // add the result only if its not null
-      if (result != null) {
-        results.add(result);
-        // if the retuned result is from wildcard node,
-        // then break the loop by updating the pathParameters
-        // by adding remaining pathSections
-        if (result.nodeType == NodeType.wildcard) {
-          result.pathParameters['*'] =
-              decodedPath.sections.skip(traversedCount - 1).join('/');
-          break;
-        }
-      }
-    } while (traversedCount < (decodedPath.sections.length));
-
-    if (results.isEmpty) {
-      return null;
-    }
-    return results;
   }
 
   void clear() {
@@ -282,7 +247,7 @@ class SambaRouter<T> {
 
       List<String> pathSections = [];
       while (true) {
-        // inserts tha pathSection at 0 postion,
+        // inserts tha pathSection at 0 position,
         // so that at last we will get correct pathSections
         // by joining with "/".
         pathSections.insert(0, tempNode.pathSection);
