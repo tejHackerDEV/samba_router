@@ -331,7 +331,14 @@ void main() {
                   'country': '2424',
                 },
                 queryParameters: {},
-                child: null,
+                child: Result(
+                  value: null,
+                  pathParameters: {
+                    'country': '2424',
+                  },
+                  queryParameters: {},
+                  child: null,
+                ),
               ),
             ),
           ),
@@ -366,7 +373,17 @@ void main() {
                   'language': 'telugu',
                   'religion': ['hindu', 'muslim'],
                 },
-                child: null,
+                child: Result(
+                  value: null,
+                  pathParameters: {
+                    'country': '2424',
+                  },
+                  queryParameters: {
+                    'language': 'telugu',
+                    'religion': ['hindu', 'muslim'],
+                  },
+                  child: null,
+                ),
               ),
             ),
           ),
@@ -801,7 +818,14 @@ void main() {
                   'country': '2424',
                 },
                 queryParameters: {},
-                child: null,
+                child: Result(
+                  value: null,
+                  pathParameters: {
+                    'country': '2424',
+                  },
+                  queryParameters: {},
+                  child: null,
+                ),
               ),
             ),
           ),
@@ -836,7 +860,17 @@ void main() {
                   'language': 'telugu',
                   'religion': ['hindu', 'muslim'],
                 },
-                child: null,
+                child: Result(
+                  value: null,
+                  pathParameters: {
+                    'country': '2424',
+                  },
+                  queryParameters: {
+                    'language': 'telugu',
+                    'religion': ['hindu', 'muslim'],
+                  },
+                  child: null,
+                ),
               ),
             ),
           ),

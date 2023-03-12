@@ -212,7 +212,12 @@ void main() {
             value: '$httpMethodName root',
             pathParameters: {},
             queryParameters: {},
-            child: null,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
@@ -229,7 +234,12 @@ void main() {
               value: '$httpMethodName countries',
               pathParameters: {},
               queryParameters: {},
-              child: null,
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
             ),
           ),
         );
@@ -247,7 +257,12 @@ void main() {
               value: '$httpMethodName countries',
               pathParameters: {},
               queryParameters: {},
-              child: null,
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
             ),
           ),
         );
@@ -265,7 +280,12 @@ void main() {
               value: '$httpMethodName countries',
               pathParameters: {},
               queryParameters: {},
-              child: null,
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
             ),
           ),
         );
@@ -283,7 +303,12 @@ void main() {
               value: '$httpMethodName states',
               pathParameters: {},
               queryParameters: {},
-              child: null,
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
             ),
           ),
         );
@@ -315,7 +340,12 @@ void main() {
             value: '$httpMethodName root',
             pathParameters: {},
             queryParameters: {},
-            child: null,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
@@ -323,6 +353,29 @@ void main() {
           sambaRouter.lookup(
             method: httpMethod,
             path: '/fruits/app/le',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fru/its/pineapple',
           ),
           Result(
             value: '$httpMethodName root',
@@ -340,26 +393,18 @@ void main() {
         expect(
           sambaRouter.lookup(
             method: httpMethod,
-            path: '/fru/its/pineapple',
-          ),
-          Result(
-            value: '$httpMethodName root',
-            pathParameters: {},
-            queryParameters: {},
-            child: null,
-          ),
-        );
-
-        expect(
-          sambaRouter.lookup(
-            method: httpMethod,
             path: '/fru/its/ban/ana',
           ),
           Result(
             value: '$httpMethodName root',
             pathParameters: {},
             queryParameters: {},
-            child: null,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
@@ -376,7 +421,12 @@ void main() {
               value: null,
               pathParameters: {},
               queryParameters: {},
-              child: null,
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
             ),
           ),
         );
@@ -658,7 +708,12 @@ void main() {
             value: '$httpMethodName root',
             pathParameters: {},
             queryParameters: {},
-            child: null,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
@@ -675,7 +730,12 @@ void main() {
               value: '$httpMethodName countries',
               pathParameters: {},
               queryParameters: {},
-              child: null,
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
             ),
           ),
         );
@@ -693,7 +753,12 @@ void main() {
               value: '$httpMethodName countries',
               pathParameters: {},
               queryParameters: {},
-              child: null,
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
             ),
           ),
         );
@@ -711,7 +776,12 @@ void main() {
               value: '$httpMethodName countries',
               pathParameters: {},
               queryParameters: {},
-              child: null,
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
             ),
           ),
         );
@@ -729,7 +799,12 @@ void main() {
               value: '$httpMethodName states',
               pathParameters: {},
               queryParameters: {},
-              child: null,
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
             ),
           ),
         );
@@ -761,7 +836,12 @@ void main() {
             value: '$httpMethodName root',
             pathParameters: {},
             queryParameters: {},
-            child: null,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
@@ -769,6 +849,29 @@ void main() {
           sambaRouter.lookup(
             method: httpMethod,
             path: '/fruits/app/le',
+          ),
+          Result(
+            value: '$httpMethodName root',
+            pathParameters: {},
+            queryParameters: {},
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          sambaRouter.lookup(
+            method: httpMethod,
+            path: '/fru/its/pineapple',
           ),
           Result(
             value: '$httpMethodName root',
@@ -786,26 +889,18 @@ void main() {
         expect(
           sambaRouter.lookup(
             method: httpMethod,
-            path: '/fru/its/pineapple',
-          ),
-          Result(
-            value: '$httpMethodName root',
-            pathParameters: {},
-            queryParameters: {},
-            child: null,
-          ),
-        );
-
-        expect(
-          sambaRouter.lookup(
-            method: httpMethod,
             path: '/fru/its/ban/ana',
           ),
           Result(
             value: '$httpMethodName root',
             pathParameters: {},
             queryParameters: {},
-            child: null,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
@@ -822,7 +917,12 @@ void main() {
               value: null,
               pathParameters: {},
               queryParameters: {},
-              child: null,
+              child: Result(
+                value: null,
+                pathParameters: {},
+                queryParameters: {},
+                child: null,
+              ),
             ),
           ),
         );

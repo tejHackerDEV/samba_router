@@ -230,7 +230,12 @@ void main() {
             value: null,
             pathParameters: {},
             queryParameters: {},
-            child: null,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
@@ -243,7 +248,12 @@ void main() {
             value: null,
             pathParameters: {},
             queryParameters: {},
-            child: null,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
@@ -256,7 +266,12 @@ void main() {
             value: null,
             pathParameters: {},
             queryParameters: {},
-            child: null,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
@@ -269,7 +284,12 @@ void main() {
             value: null,
             pathParameters: {},
             queryParameters: {},
-            child: null,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
@@ -295,7 +315,15 @@ void main() {
                   'state': 'andhra-pradesh',
                 },
                 queryParameters: {},
-                child: null,
+                child: Result(
+                  value: null,
+                  pathParameters: {
+                    'country': 'india',
+                    'state': 'andhra-pradesh',
+                  },
+                  queryParameters: {},
+                  child: null,
+                ),
               ),
             ),
           ),
@@ -323,7 +351,15 @@ void main() {
                   'state': 'ANDHRA-PRADESH',
                 },
                 queryParameters: {},
-                child: null,
+                child: Result(
+                  value: null,
+                  pathParameters: {
+                    'country': 'INDIA',
+                    'state': 'ANDHRA-PRADESH',
+                  },
+                  queryParameters: {},
+                  child: null,
+                ),
               ),
             ),
           ),
@@ -616,7 +652,12 @@ void main() {
             value: null,
             pathParameters: {},
             queryParameters: {},
-            child: null,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
@@ -629,7 +670,12 @@ void main() {
             value: null,
             pathParameters: {},
             queryParameters: {},
-            child: null,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
@@ -642,7 +688,12 @@ void main() {
             value: null,
             pathParameters: {},
             queryParameters: {},
-            child: null,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
@@ -655,7 +706,12 @@ void main() {
             value: null,
             pathParameters: {},
             queryParameters: {},
-            child: null,
+            child: Result(
+              value: null,
+              pathParameters: {},
+              queryParameters: {},
+              child: null,
+            ),
           ),
         );
 
@@ -681,7 +737,15 @@ void main() {
                   'state': 'andhra-pradesh',
                 },
                 queryParameters: {},
-                child: null,
+                child: Result(
+                  value: null,
+                  pathParameters: {
+                    'country': 'india',
+                    'state': 'andhra-pradesh',
+                  },
+                  queryParameters: {},
+                  child: null,
+                ),
               ),
             ),
           ),
@@ -709,7 +773,15 @@ void main() {
                   'state': 'ANDHRA-PRADESH',
                 },
                 queryParameters: {},
-                child: null,
+                child: Result(
+                  value: null,
+                  pathParameters: {
+                    'country': 'INDIA',
+                    'state': 'ANDHRA-PRADESH',
+                  },
+                  queryParameters: {},
+                  child: null,
+                ),
               ),
             ),
           ),

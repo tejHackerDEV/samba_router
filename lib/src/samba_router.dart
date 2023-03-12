@@ -218,7 +218,12 @@ class SambaRouter<T> {
         child: null,
       );
     }
-    return null;
+    return Result(
+      value: null,
+      pathParameters: pathParameters,
+      queryParameters: queryParameters,
+      child: null,
+    );
   }
 
   void clear() {
