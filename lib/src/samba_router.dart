@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:samba_helpers/samba_helpers.dart';
 import 'package:samba_router/src/extensions/iterable.dart';
+import 'package:samba_router/src/extensions/result.dart';
 import 'package:samba_router/src/extensions/string.dart';
 
 import 'enum/node_type.dart';
@@ -93,14 +94,24 @@ class SambaRouter<T> {
     required HttpMethod method,
     required String path,
   }) {
-    Node<T>? currentNode = _trees[method];
+    HttpMethod currentMethod = method;
+    Node<T>? currentNode = _trees[currentMethod];
+    // if the currentNode under the currentMethod is null
+    // then check whether we can look the currentNode under
+    // HttpMethod.all, if we were not already looking under it.
     if (currentNode == null) {
-      return Result(
-        value: null,
-        pathParameters: {},
-        queryParameters: {},
-        child: null,
-      );
+      if (currentMethod != HttpMethod.all) {
+        currentMethod = HttpMethod.all;
+        currentNode = _trees[currentMethod];
+      }
+      if (currentNode == null) {
+        return Result(
+          value: null,
+          pathParameters: {},
+          queryParameters: {},
+          child: null,
+        );
+      }
     }
 
     final decodedPath = path.decodePath();
@@ -110,24 +121,67 @@ class SambaRouter<T> {
         ) ??
         {};
 
-    return Result(
-      value: currentNode.value,
+    final actualResult = _lookup(
+      pathSections: decodedPath.sections,
+      currentNode: currentNode,
       pathParameters: pathParameters,
       queryParameters: queryParameters,
-      // if pathSections are empty don't try lookup simply return null
-      // else lookup through the pathSection & return as child
-      child: decodedPath.sections.isEmpty
-          ? null
-          : _lookup(
-              pathSections: decodedPath.sections,
-              currentNode: currentNode,
-              pathParameters: Map.from(pathParameters),
-              queryParameters: queryParameters,
-            ),
     );
+    // If currentMethod is already HttpMethod.all
+    // then simply return the result.
+    //
+    // Else check whether the result holds a value or not.
+    // If doesn't then look under HttpMethod.all node.
+    //
+    // Even under HttpMethod.all node if we don't find the result,
+    // simply return the value that we got from the original method.
+    if (currentMethod == HttpMethod.all) {
+      return actualResult;
+    }
+    if (actualResult.endResult?.value != null) {
+      return actualResult;
+    }
+    currentMethod = HttpMethod.all;
+    currentNode = _trees[currentMethod];
+    if (currentNode == null) {
+      return actualResult;
+    }
+
+    final allResult = _lookup(
+      pathSections: decodedPath.sections,
+      currentNode: currentNode,
+      pathParameters: pathParameters,
+      queryParameters: queryParameters,
+    );
+    if (allResult.endResult?.value != null) {
+      return allResult;
+    }
+    return actualResult;
   }
 
-  Result<T>? _lookup({
+  Result<T> _lookup({
+    required Iterable<String> pathSections,
+    required Node<T> currentNode,
+    required Map<String, String> pathParameters,
+    required Map<String, dynamic> queryParameters,
+  }) =>
+      Result(
+        value: currentNode.value,
+        pathParameters: pathParameters,
+        queryParameters: queryParameters,
+        // if pathSections are empty don't try lookup simply return null
+        // else lookup through the pathSection & return as child
+        child: pathSections.isEmpty
+            ? null
+            : _lookupUnderNode(
+                pathSections: pathSections,
+                currentNode: currentNode,
+                pathParameters: Map.from(pathParameters),
+                queryParameters: queryParameters,
+              ),
+      );
+
+  Result<T>? _lookupUnderNode({
     required Iterable<String> pathSections,
     required Node<T> currentNode,
     required Map<String, String> pathParameters,
@@ -145,7 +199,7 @@ class SambaRouter<T> {
         // else lookup through the pathSection
         child: pathSections.containsOnlyOneElement
             ? null
-            : _lookup(
+            : _lookupUnderNode(
                 pathSections: pathSections.skip(1),
                 currentNode: tempNode,
                 pathParameters: Map.from(pathParameters),
@@ -173,7 +227,7 @@ class SambaRouter<T> {
         // else lookup through the pathSection
         child: pathSections.containsOnlyOneElement
             ? null
-            : _lookup(
+            : _lookupUnderNode(
                 pathSections: pathSections.skip(1),
                 currentNode: tempNode,
                 pathParameters: Map.from(pathParameters),
@@ -196,7 +250,7 @@ class SambaRouter<T> {
         // else lookup through the pathSection
         child: pathSections.containsOnlyOneElement
             ? null
-            : _lookup(
+            : _lookupUnderNode(
                 pathSections: pathSections.skip(1),
                 currentNode: tempNode,
                 pathParameters: Map.from(pathParameters),
