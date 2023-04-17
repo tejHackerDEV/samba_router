@@ -8,7 +8,9 @@ environment:
 
 dependencies:
   samba_helpers:
-    path: '../samba_helpers'
+    git:
+      url: https://github.com/tejHackerDEV/samba_helpers
+      ref: develop
 
 dev_dependencies:
   lints: ^2.0.0
