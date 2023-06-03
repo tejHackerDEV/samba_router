@@ -8,3 +8,9 @@ pubspec.lock
 
 # Avoid committing build folder
 build/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
